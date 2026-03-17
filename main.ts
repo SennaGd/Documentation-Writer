@@ -1,4 +1,5 @@
 import * as readline from 'readline';
+import { writeFileSync } from "fs";
 
 console.clear() // Initial clear cli screen.
 
@@ -6,6 +7,8 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+
+
 
 function getNamingConvention(input:string, convention: string, type: string): any  {
     convention = convention.toLowerCase();
@@ -37,42 +40,57 @@ const testcategories: string[] = [
 ];
 
 var categoryAnswers: any[] = []; 
-var firstPushed: boolean = false;
 
+function appendConventionToArray(NamingConvention: any, categoryObject: any): any {
+    if (NamingConvention != false) {        
+        let keys = Object.keys(categoryObject);
+        category[keys[0]].push(NamingConvention);   // adds "Senna" to the array
 
-function pushFirstCategory(answersArray: string[], categoryArray: string[]): void {
-    answersArray.push( categoryArray[0] );
+        console.log(category[_category]);
+        console.clear();
+        console.log("Appended: ", NamingConvention);
+        // console.log("categoryAnswers: ", categoryAnswers);
+    } 
 }
 
-function appendConventionToArray(NamingConvention: any): any {
-            if (NamingConvention != false) 
-            {   
-                categoryAnswers.push(NamingConvention);
-                console.clear();
-                console.log("categoryAnswers: ", categoryAnswers);
-            } 
+function parseCategoryAnswers(answersArray: string[]){
+    console.log(answersArray)
+    let json = JSON.stringify(answersArray);
+    writeFileSync("file.json", json, {
+        flag: "w"
+    });
 }
 
+let _category: string = categories[0];
+let  category: { [key: string] : string[] } = { [_category] : [] };
+
+function assingCategoryObject(categoryName:string){
+    let category: { [key: string] : string[] } = { [categoryName] : [] };
+    return category
+}
 
 // User Input Loop | Basically creates the categoryAnswers array 
 function askNext(i: number, categories: string[]): void {    
-    if (!firstPushed){
-        pushFirstCategory(categoryAnswers, categories);
-        firstPushed = true;
-    } 
-
-    rl.question(`${categories[i]}: `, (input: string) => {
+    rl.question(`${categories[i]} → `, (input: string) => {
         // Next Category
         if(input == "N" || input == "n") 
         {     
             if (i + 1 >= categories.length) {
                 console.clear()
-                console.log("bye, bye!")
+                console.log("Writing to output file")
+                parseCategoryAnswers(categoryAnswers)
+
                 rl.close();
                 return;
             } else {
                 console.clear();
-                categoryAnswers.push(categories[i+1]);
+                
+                categoryAnswers.push(category)
+                console.log(category)
+                console.log(categoryAnswers)
+
+                category = assingCategoryObject(categories[i + 1])    
+
                 askNext(i + 1, categories);
             }
         }
@@ -81,12 +99,12 @@ function askNext(i: number, categories: string[]): void {
         let Header = getNamingConvention(input, "H=", "Header"); // header : big text
         let Paragraph = getNamingConvention(input, "P=", "Paragraph"); // paragraph : normal text
         let BulletPoint = getNamingConvention(input, "B=", "BulletPoint"); // bullet : - text
-        let Nonetype = getNamingConvention(input, "../", "None"); // Nonetype for names, dates, etc.
+        let Nonetype = getNamingConvention(input, "N=", "None"); // Nonetype for names, dates, etc.
         
-        let conventionsList: any[] = [Header, Paragraph, BulletPoint, Nonetype] 
+        let conventionsList: any[] = [Header, Paragraph, BulletPoint, Nonetype]
 
         conventionsList.forEach(Convention => {
-            appendConventionToArray(Convention);
+            appendConventionToArray(Convention, category);
         });
 
         askNext(i, categories);
@@ -94,7 +112,4 @@ function askNext(i: number, categories: string[]): void {
 }
 
 askNext(0, categories);
-
-
-
 
