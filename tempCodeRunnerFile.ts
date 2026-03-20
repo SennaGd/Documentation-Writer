@@ -1,7 +1,7 @@
 import * as readline from 'readline';
 import { writeFileSync } from "fs";
 
-console.clear(); // Initial clear cli screen.
+console.clear() // Initial clear cli screen.
 
 const rl = readline.createInterface ({
     input: process.stdin,
@@ -66,7 +66,7 @@ let  category: { [key: string] : string[] } = { [_category] : [] };
 
 function assingCategoryObject(categoryName:string){
     let category: { [key: string] : string[] } = { [categoryName] : [] };
-    return category;
+    return category
 }
 
 // User Input Loop | Basically creates the categoryAnswers array 
@@ -76,20 +76,20 @@ function askNext(i: number, categories: string[]): void {
         if(input == "N" || input == "n") 
         {     
             if (i + 1 >= categories.length) {
-                console.clear();
-                console.log("Writing to output file");
-                parseCategoryAnswers(categoryAnswers);
+                console.clear()
+                console.log("Writing to output file")
+                parseCategoryAnswers(categoryAnswers)
 
                 rl.close();
                 return;
             } else {
                 console.clear();
                 
-                categoryAnswers.push(category);
-                console.log(category);
-                console.log(categoryAnswers);
+                categoryAnswers.push(category)
+                console.log(category)
+                console.log(categoryAnswers)
 
-                category = assingCategoryObject(categories[i + 1]);    
+                category = assingCategoryObject(categories[i + 1])    
 
                 askNext(i + 1, categories);
             }
@@ -101,7 +101,7 @@ function askNext(i: number, categories: string[]): void {
         let BulletPoint = getNamingConvention(input, "B=", "BulletPoint"); // bullet : - text
         let Nonetype = getNamingConvention(input, "N=", "None"); // Nonetype for names, dates, etc.
         
-        let conventionsList: any[] = [Header, Paragraph, BulletPoint, Nonetype];
+        let conventionsList: any[] = [Header, Paragraph, BulletPoint, Nonetype]
 
         conventionsList.forEach(Convention => {
             appendConventionToArray(Convention, category);
