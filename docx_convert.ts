@@ -9,7 +9,6 @@ const data: DataItem[] = require("./file.json");
 
 // ---- Code ---- //
 
-
 export function GenerateWordDocument(title: string) {
     let contentsList: Paragraph[] = []
 
@@ -57,7 +56,7 @@ export function GenerateWordDocument(title: string) {
                     indent:{ left: indentation },
                     spacing : {before: headerSpacing},    
                     children: [ 
-                        new TextRun({text: findValues[i][1], size: 30, characterSpacing: 10}) 
+                        new TextRun({font: "Calibri", text: findValues[i][1], size: 30, characterSpacing: 10}) 
                     ]
                 })
 
@@ -73,7 +72,7 @@ export function GenerateWordDocument(title: string) {
                     indent:{ left: indentation },
                     spacing : {before: 50},    
                     children: [ 
-                        new TextRun({text: findValues[i][1], size: 24, characterSpacing: 0}) 
+                        new TextRun({font: "Calibri", text: findValues[i][1], size: 24}) 
                     ]
                 })
                 
@@ -85,7 +84,7 @@ export function GenerateWordDocument(title: string) {
                 { 
                     spacing : {before: 0},    
                     children: [ 
-                        new TextRun({text: findValues[i][1], size: 24, italics: true, characterSpacing: 0}) 
+                        new TextRun({font: "Calibri", text: findValues[i][1], size: 24, italics: true}) 
                     ]
                 })
             }
@@ -95,11 +94,24 @@ export function GenerateWordDocument(title: string) {
         }
 
     });
-    
+
     // Document!
-    let doc = new Document({
+
+    const doc = new Document({
         sections: [ { children: contentsList } ],
-    });
+           
+        styles: {
+            default: {
+                document: {
+                run: {
+                    font: "Calibri",
+                    size: 22
+                }
+            }
+        }
+    }
+})
+
 
     Packer.toBuffer(doc).then((buffer) => {
         fs.writeFileSync(title + ".docx", buffer);
@@ -107,7 +119,7 @@ export function GenerateWordDocument(title: string) {
 }
 
 
-
+GenerateWordDocument("")
 
 
 

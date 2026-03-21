@@ -24,7 +24,6 @@ function getNamingConvention(input:string, convention: string, type: string): an
     }
 }
 
-
 const categories: string[] = [
     "Samenvatting", 
     "Analyse huidige situatie",
@@ -39,6 +38,7 @@ const testcategories: string[] = [
 ];
 
 var categoryAnswers: any[] = []; 
+var jsonGenerated: boolean;
 
 function appendConventionToArray(NamingConvention: any, categoryObject: any): any {
     if (NamingConvention != false) {        
@@ -76,6 +76,7 @@ function askNext(i: number, categories: string[]): void {
         {     
             if (i + 1 >= categories.length) {
                 console.clear();
+                jsonGenerated = true;
                 console.log("Writing to output file");
                 parseCategoryAnswers(categoryAnswers);
 
@@ -112,4 +113,6 @@ function askNext(i: number, categories: string[]): void {
 
 askNext(0, categories);
 
-GenerateWordDocument("")
+if(jsonGenerated){
+    GenerateWordDocument("")
+}
