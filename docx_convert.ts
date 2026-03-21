@@ -1,61 +1,120 @@
 import * as fs from "fs";
-import { Document, Packer, Paragraph, TextRun } from "docx";
-import path from 'path';
+import { Document, Packer, Paragraph, TextRun, AlignmentType  } from "docx";
 
 type DataItem = {
   [key: string]: string[][];
 };
 
-// const ConventionTypes: any[] = [
-//     {"None" : ""},
-// ] 
-
 const data: DataItem[] = require("./file.json"); 
 
-let index: number = 0;
-data.forEach(category => {
-    const firstItem = data[index];
-    if (!firstItem) 
-    { return; }
+// ---- Code ---- //
 
-    const findKey = Object.keys(firstItem)[0];
-    if (!findKey)
-    { return; }
 
-    const findValues = firstItem[findKey];
-    if(!findValues?.[0])
-    { return; }
+export function GenerateWordDocument(title: string) {
+    let contentsList: Paragraph[] = []
 
-    // Traverses all contents from a (category | key)
-    for(let i: number = 0; i < (findValues.length); i++) 
-    { console.log(findValues[i]); }
 
-    index++;
-});
-// const doc = new Document({
-//     sections: [
-//         {
-//             children: [
-//                 new Paragraph({
-                    
-//                     children: [
-//                         new TextRun("Hello World"),
-//                         new TextRun({
-//                             text: " - Bold text",
-//                             bold: true,
-//                             size: 50
-//                         }),
-//                         new TextRun({
-//                             text: "header",
-//                             size: 20,
-//                         })
-//                     ],
-//                 }),
-//             ],
-//         },
-//     ],
-// });
+    data.forEach(category => {
+        var indentation = 0;
+        let findKey = Object.keys(category)[0];
 
-// Packer.toBuffer(doc).then((buffer) => {
-//     fs.writeFileSync("My Document.docx", buffer);
-// });
+        if (!findKey) { 
+            return; 
+        } else { 
+            var FirstPlaced: boolean = false;
+            var headerSpacing = 0;
+
+            contentsList.push(new Paragraph(
+                { 
+                    spacing : {before: 400}, 
+                    children : [ new TextRun({
+                        text: findKey, 
+                        size: 40, 
+                        bold: true, 
+                        characterSpacing: 20 
+                    })] 
+                }));
+        }
+
+
+        const findValues = category[findKey];
+        if(!findValues?.[0])
+        { return; }
+
+        
+        //* Traverses all contents from a (category | key)
+        //* Data inside category
+        for(let i: number = 0; i < (findValues.length); i++) { 
+            if (findValues[i][0] == "Header") 
+            {   
+                var indentation = 360;
+                if (FirstPlaced) {
+                    headerSpacing = 100;
+                }
+                
+                var content = new Paragraph(
+                { 
+                    indent:{ left: indentation },
+                    spacing : {before: headerSpacing},    
+                    children: [ 
+                        new TextRun({text: findValues[i][1], size: 30, characterSpacing: 10}) 
+                    ]
+                })
+
+                var indentation = 360;
+                FirstPlaced = true; 
+            }
+            
+            if (findValues[i][0] == "Paragraph") 
+            {           
+                var indentation = 180;
+                var content = new Paragraph(
+                { 
+                    indent:{ left: indentation },
+                    spacing : {before: 50},    
+                    children: [ 
+                        new TextRun({text: findValues[i][1], size: 24, characterSpacing: 0}) 
+                    ]
+                })
+                
+                
+            }; 
+
+            if (findValues[i][0] == "BulletPoint") {
+                var content = new Paragraph(
+                { 
+                    spacing : {before: 0},    
+                    children: [ 
+                        new TextRun({text: findValues[i][1], size: 24, italics: true, characterSpacing: 0}) 
+                    ]
+                })
+            }
+
+            contentsList.push(content); // append content on content.
+            console.log(findValues[i]); 
+        }
+
+    });
+    
+    // Document!
+    let doc = new Document({
+        sections: [ { children: contentsList } ],
+    });
+
+    Packer.toBuffer(doc).then((buffer) => {
+        fs.writeFileSync(title + ".docx", buffer);
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

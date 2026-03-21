@@ -1,5 +1,6 @@
 import * as readline from 'readline';
 import { writeFileSync } from "fs";
+import { GenerateWordDocument } from "./docx_convert"
 
 console.clear(); // Initial clear cli screen.
 
@@ -25,8 +26,6 @@ function getNamingConvention(input:string, convention: string, type: string): an
 
 
 const categories: string[] = [
-    "Made by",
-    "Doelgroep",
     "Samenvatting", 
     "Analyse huidige situatie",
     "Analyse gewenste situatie",
@@ -113,3 +112,4 @@ function askNext(i: number, categories: string[]): void {
 
 askNext(0, categories);
 
+GenerateWordDocument("")
