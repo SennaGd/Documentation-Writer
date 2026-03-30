@@ -26,7 +26,7 @@ export function GenerateWordDocument(title: string) {
             contentsList.push(new Paragraph(
                 { 
                     spacing : {before: 400}, 
-                    children : [ new TextRun({
+                    children : [new TextRun({
                         text: findKey, 
                         size: 40, 
                         bold: true, 
@@ -88,6 +88,8 @@ export function GenerateWordDocument(title: string) {
                     ]
                 })
             }
+            if (!content) 
+            { return; }
 
             contentsList.push(content); // append content on content.
             console.log(findValues[i]); 
@@ -120,13 +122,3 @@ export function GenerateWordDocument(title: string) {
 
 
 GenerateWordDocument("")
-
-
-
-
-
-
-
-
-
-

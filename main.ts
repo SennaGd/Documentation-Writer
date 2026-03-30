@@ -24,7 +24,12 @@ function getNamingConvention(input:string, convention: string, type: string): an
     }
 }
 
-const categories: string[] = [
+
+const test: string[] = [
+    "test2", 
+    "Analyse huidige situatie",
+];
+const FunctioneelOntwerp: string[] = [
     "Samenvatting", 
     "Analyse huidige situatie",
     "Analyse gewenste situatie",
@@ -33,12 +38,20 @@ const categories: string[] = [
     "Planning"
 ];
 
-const testcategories: string[] = [
-    "Readability", "Context"
-];
+const templates: any[] = [
+    {"Functioneel Ontwerp" : FunctioneelOntwerp},
+    {"Project Plan" : test}, 
+]
+
+
 
 var categoryAnswers: any[] = []; 
 var jsonGenerated: boolean;
+var hasChosenTemplate: boolean;
+
+
+
+
 
 function appendConventionToArray(NamingConvention: any, categoryObject: any): any {
     if (NamingConvention != false) {        
@@ -60,7 +73,7 @@ function parseCategoryAnswers(answersArray: string[]){
     });
 }
 
-let _category: string = categories[0];
+let _category: string = FunctioneelOntwerp[0];
 let  category: { [key: string] : string[] } = { [_category] : [] };
 
 function assingCategoryObject(categoryName:string){
@@ -68,11 +81,63 @@ function assingCategoryObject(categoryName:string){
     return category;
 }
 
+let hasTemplate: boolean;
+let selectedCategory: string[] = [];
+
+function getTemplate() {
+    let i = 1;
+    templates.forEach(template => {
+        let templateString = Object.keys(template)[0]
+        console.log("("+ i +"). " + templateString);
+        i++;
+    });
+}
 // User Input Loop | Basically creates the categoryAnswers array 
-function askNext(i: number, categories: string[]): void {    
-    rl.question(`${categories[i]} → `, (input: string) => {
+function askNext(i: number, categories: string[]): void { 
+    console.clear();
+    getTemplate();
+
+    var b = 1;
+    rl.question(`Select a template: `, (input: string) => {
+        let selectedCategory;
+        let categoryName;
+        let IntInput = parseInt(input, 10)
+        templates.forEach(template => {
+            if (IntInput == b) {
+                
+                selectedCategory = Object.values(template)[0]
+                categoryName = Object.keys(template)[0]
+            } 
+            b++;
+        });
+
+        if (selectedCategory == null) {
+            askNext(i, categories);
+        } 
+        else {
+            console.clear();
+        }
+
+    
+    
+    rl.question(`${selectedCategory[i]} → `, (input2: string) => {
+        console.log(categoryName)
+        // let intInput: number 
+        // if ((intInput =+ input) != null) {
+        //     intInput =+ input;
+            
+        //     console.log(Object.keys(templates[intInput-1])[0]);
+
+        //     if(intInput) 
+        //     {
+        //         let selectedTemplate = (Object.values(templates)[intInput-1]) 
+        //         hasChosenTemplate = true; 
+        //     }
+
+        //     }
+ 
         // Next Category
-        if(input == "N" || input == "n") 
+        if(input2 == "N" || input2 == "n") 
         {     
             if (i + 1 >= categories.length) {
                 console.clear();
@@ -82,6 +147,7 @@ function askNext(i: number, categories: string[]): void {
 
                 rl.close();
                 return;
+
             } else {
                 console.clear();
                 
@@ -96,10 +162,10 @@ function askNext(i: number, categories: string[]): void {
         }
 
         // Naming Conventions 
-        let Header = getNamingConvention(input, "H=", "Header"); // header : big text
-        let Paragraph = getNamingConvention(input, "P=", "Paragraph"); // paragraph : normal text
-        let BulletPoint = getNamingConvention(input, "B=", "BulletPoint"); // bullet : - text
-        let Nonetype = getNamingConvention(input, "N=", "None"); // Nonetype for names, dates, etc.
+        let Header = getNamingConvention(input2, "H=", "Header"); // header : big text
+        let Paragraph = getNamingConvention(input2, "P=", "Paragraph"); // paragraph : normal text
+        let BulletPoint = getNamingConvention(input2, "B=", "BulletPoint"); // bullet : - text
+        let Nonetype = getNamingConvention(input2, "N=", "None"); // Nonetype for names, dates, etc.
         
         let conventionsList: any[] = [Header, Paragraph, BulletPoint, Nonetype];
 
@@ -109,10 +175,12 @@ function askNext(i: number, categories: string[]): void {
 
         askNext(i, categories);
     });
+    })
 }
 
-askNext(0, categories);
 
+askNext(0, FunctioneelOntwerp)
 if(jsonGenerated){
-    GenerateWordDocument("")
+    GenerateWordDocument("");
 }
+

@@ -1,0 +1,38 @@
+{
+  "Functioneel Ontwerp": [
+    { "name": "Samenvatting", "items": [] },
+    { "name": "Analyse huidige situatie", "items": [] },
+    { "name": "Analyse gewenste situatie", "items": [] },
+    { "name": "Consequenties", "items": [] },
+    { "name": "Kosten", "items": [] }
+  ],
+
+  "Technisch Ontwerp": [
+    { "name": "Welke technieken worden er gebruikt?", "items": [] },
+    { "name": "Waar wordt de data opgeslage?", "items": [] },
+    { "name": "Hoe worden ingevulde gegevens verwerkt", "items": [] },
+    { "name": "Toegangkelijkheid van de gegevens", "items": [] },
+    { "name": "De responsetijden", "items": [] },
+    { "name": "Verwerkingssnelheid", "items": [] },
+    { "name": "De Onderhoudtbaarheid", "items": [] },
+    { "name": "Beveiliging", "items": [] },
+    { "name": "De ontwikkelmethode / Programmeertalen", "items": [] },
+    { "name": "Randvoorwaarden voor koppeling aan de bestaande systemen", "items": [] }
+  ],
+
+  "Project Plan" : [
+    { "name": "Inhoud Project", "items": [] },
+    { "name": "Doelstelling", "items": [] },
+    { "name": "Resultaat", "items": [] },
+    { "name": "Afbakening ", "items": [] },
+    { "name": "Moscow Tabel", "items": [] },
+    { "name": "Planning", "items": [] },
+    { "name": "Risico Analyse", "items": [] },
+    { "name": "Randvoorwaarden", "items": [] },
+    { "name": "Documenthistorie", "items": [] }
+  ], 
+  "Empty Template" : [
+    {"name": "none", "items": [] }
+  ]
+}
+
