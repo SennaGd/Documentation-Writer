@@ -10,10 +10,13 @@ import (
 	"strconv"
 	"strings"
 
+	// "github.com/acarl005/stripansi"
 	"github.com/gomutex/godocx"
 	"github.com/gomutex/godocx/docx"
-	tsize "github.com/kopoli/go-terminal-size"
+	"github.com/fatih/color"
+
 	graphics "DocumentationWriter/graphics"
+	tsize "github.com/kopoli/go-terminal-size"
 )
 
 type UserInputs []map[string]string
@@ -85,6 +88,28 @@ func Convention(input string, Convention string, conventionType string, oldConve
 	return input, oldConvention
 }
 
+func HelpPage(Width int, Offset int) {
+	graphics.GenerateBox(Width, Offset, color.BlueString("Help Page"), func() {
+		graphics.PrintIndexTitle(Width, Offset,  "Where you felt lost, you found it.")
+		graphics.PrintLine(Width, Offset, " ", "│", "│")
+		graphics.PrintLine(Width, Offset, "─", "├", "┤")
+		
+		graphics.PrintIndexTitle(Width, Offset, color.YellowString("Naming Conventions."))
+		graphics.PrintLine(Width, Offset, " ", "│", "│")
+		graphics.PrintTextLine(Width, Offset, 4, "Write Convention (" + color.RedString("'P='") + ") : followed by text")
+		graphics.PrintLine(Width, Offset, " ", "│", "│")
+
+		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'B='")+" This is a " + color.GreenString("Bullet") + " Element")
+		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'H='")+" This is a " + color.GreenString("Header") + " Element")
+		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'P='")+" This is a " + color.GreenString("Paragraph") + " Element")
+		graphics.PrintLine(Width, Offset, "─", "├", "┤")
+		graphics.PrintIndexTitle(Width, Offset, color.YellowString("Go To Next Category"))
+		graphics.PrintLine(Width, Offset, " ", "│", "│")
+		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'N'")+" To traverse to the next " + color.GreenString("Category"))
+		graphics.PrintLine(Width, Offset, " ", "│", "│")
+	})
+}
+
 func ContentInputs(Document *docx.RootDoc, JSONdata Template, Width int, Offset int, selectedTemplate string) []Content {
 	/*
 		- inputsList = list of all inputs before "next category"
@@ -92,7 +117,7 @@ func ContentInputs(Document *docx.RootDoc, JSONdata Template, Width int, Offset 
 	*/
 
 	var input string
-	var conType string
+	var conType string = "Nothing Written yet."
 
 	contents, ok := JSONdata[selectedTemplate] // or "template1", whatever your key is
 	if !ok {
@@ -107,18 +132,19 @@ func ContentInputs(Document *docx.RootDoc, JSONdata Template, Width int, Offset 
 			// Document.AddHeading(contents[parsed].Name, 1)
 			inputText := ""
 			if len(input) >= 20 {
-				inputText = ("Contents: lots of text Added!")
+				inputText = ("Contents: "+ color.RedString("lots of text Added!"))
 			} else if len(input) <= 1 {
-				inputText = ("Nothing added yet.")
+				inputText = ("Contents: "+ color.YellowString("Nothing added yet."))
 			} else {
-				inputText = ("Contents: " + input)
+				inputText = ("Contents: " + color.GreenString(input))
 			}
 
-			graphics.GenerateBox(Width, Offset, "Current Category: "+contents[parsed].Name, func() {
-				graphics.PrintTextLine(Width, Offset, 4, "Type 'help' for conventions.")
+			graphics.GenerateBox(Width, Offset, (color.BlueString("Current Category: ") + color.CyanString(contents[parsed].Name)), func() {
 				graphics.PrintLine(Width, Offset, " ", "│", "│")
-				graphics.PrintTextLine(Width, Offset, 2, "Type: "+conType)
+				graphics.PrintTextLine(Width, Offset, 2, "Type: "+ color.GreenString(conType))
 				graphics.PrintTextLine(Width, Offset, 2, inputText)
+				graphics.PrintLine(Width, Offset, " ", "│", "│")
+				graphics.PrintIndexTitle(Width, Offset,  "Type " + color.YellowString("'help'") + " for conventions.")
 			})
 			conType = "" // reset previous Convention
 
@@ -149,15 +175,9 @@ func ContentInputs(Document *docx.RootDoc, JSONdata Template, Width int, Offset 
 				break
 			}
 
-			if input == "help" || input == "Help" {
+			if input == "help" || input == "Help" || input == "HELP" {
 				Clear()
-				Print(
-					"│\n" +
-						"│ 'enter'-> Return.\n" +
-						"│ 'h=' -> Header Element.\n" +
-						"│ 'p=' -> Paragraph Element\n" +
-						"│ 'b=' -> Bullet Element.\n",
-				)
+				HelpPage(Width, Offset)
 				input = Get()
 			}
 			Clear()
@@ -169,7 +189,7 @@ func ContentInputs(Document *docx.RootDoc, JSONdata Template, Width int, Offset 
 	return contents
 }
 
-func SelectTemplate(data Template) string {
+func SelectTemplate(data Template, Width int, Offset int,) string {
 	var intInput int
 	var err error
 	for {
@@ -182,12 +202,20 @@ func SelectTemplate(data Template) string {
 
 		sort.Strings(keys) // sort da keys
 
-		for i, k := range keys {
-			fmt.Println("(", i+1, ").", k)
-		}
+
+		graphics.GenerateBox(Width, Offset, color.BlueString("Select a category."), func() {
+			for i, k := range keys {
+				text := (color.WhiteString("("+strconv.Itoa(i+1)+"). ") + color.GreenString(k))
+				graphics.PrintTextLine(Width, Offset, 2, text)
+				
+			}
+			graphics.PrintLine(Width, Offset, " ", "│", "│")
+			graphics.PrintIndexTitle(Width, Offset,  "Type " + color.YellowString("'help'") + " for conventions.")
+			
+		})
+		
 
 		// Input handling
-		Print("\nTemplate: ")
 		input := Get()
 		intInput, err = strconv.Atoi(input) // Convert string > integer
 		if err == nil {                     // If there's no error select the template
@@ -199,43 +227,83 @@ func SelectTemplate(data Template) string {
 				}
 			}
 		}
+		
+		if input == "help" || input == "Help" || input == "HELP" {
+			Clear()
+			HelpPage(Width, Offset)
+			Get()
+		}
 	}
 }
 
 func GetDocumentInformation(Width int, Offset int, Document *docx.RootDoc) string {
-	graphics.GenerateBox(Width, Offset, "Enter the Filename.", func() {
-		graphics.PrintTextLine(Width, Offset, 2, "Filename: None")
-		graphics.PrintTextLine(Width, Offset, 2, "Title:    None")
+	fileName := color.YellowString("None")
+	title := color.CyanString("None")
+
+	graphics.GenerateBox(Width, Offset, color.BlueString("Enter the Filename."), func() {
+		graphics.PrintTextLine(Width, Offset, 2, "Filename: " + fileName)
+		graphics.PrintTextLine(Width, Offset, 2, "Title:    " + title)
 
 		graphics.PrintLine(Width, Offset, " ", "│", "│")
-		graphics.PrintTextLine(Width, Offset, 4, "This will be the filename + '.docx'")
+		graphics.PrintIndexTitle(Width, Offset,  "This will be the filename + '.docx'")
 	})
 
 	input := Get()
 
 	DocName := input
+	fileName = color.GreenString(input)
 	Clear()
-	graphics.GenerateBox(Width, Offset, "Enter the Document Title", func() {
-		graphics.PrintTextLine(Width, Offset, 2, "Filename: "+DocName)
-		graphics.PrintTextLine(Width, Offset, 2, "Title:    None")
+
+	title = color.YellowString("None")
+	graphics.GenerateBox(Width, Offset, color.BlueString("Enter the Document Title"), func() {
+		graphics.PrintTextLine(Width, Offset, 2, "Filename: "+fileName+color.GreenString(".docx"))
+		graphics.PrintTextLine(Width, Offset, 2, "Title:    "+title)
 		graphics.PrintLine(Width, Offset, " ", "│", "│")
-		graphics.PrintTextLine(Width, Offset, 4, "Title will be inside the file!")
+		graphics.PrintIndexTitle(Width, Offset,  "Title will be inside the file!")
 	})
-
 	input = Get()
+	title = color.GreenString(input)
 	Clear()
-	Document.AddHeading(input, 0)
 
-	graphics.GenerateBox(Width, Offset, "Who's it made by?", func() {
-		graphics.PrintTextLine(Width, Offset, 2, "Filename: "+DocName)
-		graphics.PrintTextLine(Width, Offset, 2, "Title:    "+input)
+
+	
+	Document.AddHeading(input, 0)
+	graphics.GenerateBox(Width, Offset, color.BlueString("Who's it made by?"), func() {
+		graphics.PrintTextLine(Width, Offset, 2, "Filename: "+fileName+color.GreenString(".docx"))
+		graphics.PrintTextLine(Width, Offset, 2, "Title:    "+title)
 		graphics.PrintLine(Width, Offset, " ", "│", "│")
-		graphics.PrintTextLine(Width, Offset, 4, "This will be inside the file!")
+		graphics.PrintIndexTitle(Width, Offset,  "This will be inside the file!")
 	})
 	input = Get()
 	Clear()
 	Document.AddParagraph("Gemaakt door: " + input)
 	return DocName
+}
+
+func GetSize(Offset int) tsize.Size {
+	for {
+		var s tsize.Size
+		var err error
+		s, err = tsize.GetSize()
+		Throw(err)
+		
+		if s.Width < 100 {
+			Clear()
+			graphics.GenerateBox(s.Width, Offset, color.BlueString("Increase Window Size..."), func() {
+				stringSize:=strconv.Itoa(s.Width)
+				size := color.YellowString(stringSize)
+				
+				graphics.PrintTextLine(s.Width, Offset, 2, "Size: "+size)
+				graphics.PrintTextLine(s.Width, Offset, 2, "Minimum: "+color.GreenString("100"))
+				graphics.PrintLine(s.Width, Offset, " ", "│", "│")
+				graphics.PrintIndexTitle(s.Width, Offset,  "Press Enter To Refresh")
+			})
+			Get()
+		} else {
+			Clear()
+			return s
+		}
+	}
 }
 
 
@@ -245,10 +313,8 @@ func main() {
 	// TODO: Width can't be Smaller than 100
 
 	var s tsize.Size
-	s, err := tsize.GetSize()
-	Throw(err)
-
 	var offset int = 10
+	s = GetSize(offset)
 
 	// STEP 0 | Get TITLE, MADE BY & FILE TITLE
 	document, err := godocx.NewDocument()
@@ -267,7 +333,7 @@ func main() {
 	err = json.Unmarshal(templateFile, &data) // write json contents to (data)
 	Throw(err)
 
-	selectedTemplate := SelectTemplate(data)
+	selectedTemplate := SelectTemplate(data, s.Width, offset)
 
 	// create file
 	file, err := os.Create("inputs.json")

@@ -1,8 +1,12 @@
 package graphics
 
-import ("fmt"
- "os/exec"
-	"os")
+import (
+	"fmt"
+ 	"os/exec"
+	"os"
+
+	"github.com/acarl005/stripansi"
+)
 
 func Print(text string) {
 	fmt.Print(text)
@@ -45,10 +49,12 @@ func PrintIndexTitle(width int, offset int, text string) {
 	width -= 2            // Edges
 	width -= (offset * 2) // offset | left & right
 
-	textLength := len(text)
+	strippedText := stripansi.Strip(text)
+	textLength := len(strippedText)
+	
 
 	lineWidth := GetTotalLineWidth(width, offset)
-	totalWidth := offset + 1 + (width - (textLength / 2)) + len(text) + (width - (textLength / 2)) + 1 + offset
+	totalWidth := offset + 1 + (width - (textLength / 2)) + len(strippedText) + (width - (textLength / 2)) + 1 + offset
 	if lineWidth > totalWidth {
 		// 168 - 169 = -1
 		diff = lineWidth - totalWidth
@@ -81,6 +87,8 @@ func PrintIndexTitle(width int, offset int, text string) {
 }
 
 func PrintTextLine(width int, offset int, textOffset int, text string) {
+	strippedText := stripansi.Strip(text)
+
 	// Rounding to be an equal num
 	if width%2 != 0 {
 		width -= 1
@@ -89,10 +97,10 @@ func PrintTextLine(width int, offset int, textOffset int, text string) {
 	diff := 0
 	width = width/2 - (2 + (offset * 2))
 
-	textLength := len(text)
+	textLength := len(strippedText)
 
 	lineWidth := GetTotalLineWidth(width, offset)
-	totalWidth := offset + 1 + (width - (textLength / 2)) + len(text) + (width - (textLength / 2)) + 1 + offset
+	totalWidth := offset + 1 + (width - (textLength / 2)) + len(strippedText) + (width - (textLength / 2)) + 1 + offset
 
 	if lineWidth > totalWidth {
 		// 168 - 169 = -1
