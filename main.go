@@ -27,13 +27,15 @@ type Content struct {
 	Contents []interface{}
 }
 
+func Print(text string) {
+	fmt.Print(text)
+}
+
 func Clear() {
 	cmd := exec.Command("cmd", "/c", "cls")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
 }
-
-
 
 func Throw(err any) {
 	if err != nil {
