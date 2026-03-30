@@ -2,7 +2,7 @@ import * as readline from 'readline';
 import { writeFileSync } from "fs";
 import { GenerateWordDocument } from "./docx_convert"
 
-console.clear(); // Initial clear cli screen.
+console.Clear(); // Initial Clear cli screen.
 
 const rl = readline.createInterface ({
     input: process.stdin,
@@ -11,11 +11,11 @@ const rl = readline.createInterface ({
 
 
 
-function getNamingConvention(input:string, convention: string, type: string): any  {
-    convention = convention.toLowerCase();
+function getNamingConvention(input:string, Convention: string, type: string): any  {
+    Convention = Convention.toLowerCase();
 
-    let search:number =  input.toLowerCase().search(convention);
-    let conventionLength = convention.length;
+    let search:number =  input.toLowerCase().search(Convention);
+    let conventionLength = Convention.length;
     
     if (search !== -1) {
         return [type, input.substring(conventionLength)];
@@ -59,7 +59,7 @@ function appendConventionToArray(NamingConvention: any, categoryObject: any): an
         category[keys[0]].push(NamingConvention);   // adds "Senna" to the array
 
         console.log(category[_category]);
-        console.clear();
+        console.Clear();
         console.log("Appended: ", NamingConvention);
         // console.log("categoryAnswers: ", categoryAnswers);
     } 
@@ -94,7 +94,7 @@ function getTemplate() {
 }
 // User Input Loop | Basically creates the categoryAnswers array 
 function askNext(i: number, categories: string[]): void { 
-    console.clear();
+    console.Clear();
     getTemplate();
 
     var b = 1;
@@ -115,7 +115,7 @@ function askNext(i: number, categories: string[]): void {
             askNext(i, categories);
         } 
         else {
-            console.clear();
+            console.Clear();
         }
 
     
@@ -140,7 +140,7 @@ function askNext(i: number, categories: string[]): void {
         if(input2 == "N" || input2 == "n") 
         {     
             if (i + 1 >= categories.length) {
-                console.clear();
+                console.Clear();
                 jsonGenerated = true;
                 console.log("Writing to output file");
                 parseCategoryAnswers(categoryAnswers);
@@ -149,7 +149,7 @@ function askNext(i: number, categories: string[]): void {
                 return;
 
             } else {
-                console.clear();
+                console.Clear();
                 
                 categoryAnswers.push(category);
                 console.log(category);
