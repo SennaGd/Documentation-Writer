@@ -11,11 +11,12 @@ import (
 	"strings"
 
 	// "github.com/acarl005/stripansi"
+	"github.com/fatih/color"
 	"github.com/gomutex/godocx"
 	"github.com/gomutex/godocx/docx"
-	"github.com/fatih/color"
 
 	graphics "DocumentationWriter/graphics"
+
 	tsize "github.com/kopoli/go-terminal-size"
 )
 
@@ -90,22 +91,22 @@ func Convention(input string, Convention string, conventionType string, oldConve
 
 func HelpPage(Width int, Offset int) {
 	graphics.GenerateBox(Width, Offset, color.BlueString("Help Page"), func() {
-		graphics.PrintIndexTitle(Width, Offset,  "Where you felt lost, you found it.")
+		graphics.PrintIndexTitle(Width, Offset, "Where you felt lost, you found it.")
 		graphics.PrintLine(Width, Offset, " ", "│", "│")
 		graphics.PrintLine(Width, Offset, "─", "├", "┤")
-		
+
 		graphics.PrintIndexTitle(Width, Offset, color.YellowString("Naming Conventions."))
 		graphics.PrintLine(Width, Offset, " ", "│", "│")
-		graphics.PrintTextLine(Width, Offset, 4, "Write Convention (" + color.RedString("'P='") + ") : followed by text")
+		graphics.PrintTextLine(Width, Offset, 4, "Write Convention ("+color.RedString("'P='")+") : followed by text")
 		graphics.PrintLine(Width, Offset, " ", "│", "│")
 
-		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'B='")+" This is a " + color.GreenString("Bullet") + " Element")
-		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'H='")+" This is a " + color.GreenString("Header") + " Element")
-		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'P='")+" This is a " + color.GreenString("Paragraph") + " Element")
+		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'B='")+" This is a "+color.GreenString("Bullet")+" Element")
+		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'H='")+" This is a "+color.GreenString("Header")+" Element")
+		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'P='")+" This is a "+color.GreenString("Paragraph")+" Element")
 		graphics.PrintLine(Width, Offset, "─", "├", "┤")
 		graphics.PrintIndexTitle(Width, Offset, color.YellowString("Go To Next Category"))
 		graphics.PrintLine(Width, Offset, " ", "│", "│")
-		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'N'")+" To traverse to the next " + color.GreenString("Category"))
+		graphics.PrintTextLine(Width, Offset, 2, color.GreenString("'N'")+" To traverse to the next "+color.GreenString("Category"))
 		graphics.PrintLine(Width, Offset, " ", "│", "│")
 	})
 }
@@ -132,19 +133,19 @@ func ContentInputs(Document *docx.RootDoc, JSONdata Template, Width int, Offset 
 			// Document.AddHeading(contents[parsed].Name, 1)
 			inputText := ""
 			if len(input) >= 20 {
-				inputText = ("Contents: "+ color.RedString("lots of text Added!"))
+				inputText = ("Contents: " + color.RedString("lots of text Added!"))
 			} else if len(input) <= 1 {
-				inputText = ("Contents: "+ color.YellowString("Nothing added yet."))
+				inputText = ("Contents: " + color.YellowString("Nothing added yet."))
 			} else {
 				inputText = ("Contents: " + color.GreenString(input))
 			}
 
 			graphics.GenerateBox(Width, Offset, (color.BlueString("Current Category: ") + color.CyanString(contents[parsed].Name)), func() {
 				graphics.PrintLine(Width, Offset, " ", "│", "│")
-				graphics.PrintTextLine(Width, Offset, 2, "Type: "+ color.GreenString(conType))
+				graphics.PrintTextLine(Width, Offset, 2, "Type: "+color.GreenString(conType))
 				graphics.PrintTextLine(Width, Offset, 2, inputText)
 				graphics.PrintLine(Width, Offset, " ", "│", "│")
-				graphics.PrintIndexTitle(Width, Offset,  "Type " + color.YellowString("'help'") + " for conventions.")
+				graphics.PrintIndexTitle(Width, Offset, "Type "+color.YellowString("'help'")+" for conventions.")
 			})
 			conType = "" // reset previous Convention
 
@@ -189,7 +190,7 @@ func ContentInputs(Document *docx.RootDoc, JSONdata Template, Width int, Offset 
 	return contents
 }
 
-func SelectTemplate(data Template, Width int, Offset int,) string {
+func SelectTemplate(data Template, Width int, Offset int) string {
 	var intInput int
 	var err error
 	for {
@@ -202,18 +203,16 @@ func SelectTemplate(data Template, Width int, Offset int,) string {
 
 		sort.Strings(keys) // sort da keys
 
-
 		graphics.GenerateBox(Width, Offset, color.BlueString("Select a category."), func() {
 			for i, k := range keys {
 				text := (color.WhiteString("("+strconv.Itoa(i+1)+"). ") + color.GreenString(k))
 				graphics.PrintTextLine(Width, Offset, 2, text)
-				
+
 			}
 			graphics.PrintLine(Width, Offset, " ", "│", "│")
-			graphics.PrintIndexTitle(Width, Offset,  "Type " + color.YellowString("'help'") + " for conventions.")
-			
+			graphics.PrintIndexTitle(Width, Offset, "Type "+color.YellowString("'help'")+" for conventions.")
+
 		})
-		
 
 		// Input handling
 		input := Get()
@@ -227,7 +226,7 @@ func SelectTemplate(data Template, Width int, Offset int,) string {
 				}
 			}
 		}
-		
+
 		if input == "help" || input == "Help" || input == "HELP" {
 			Clear()
 			HelpPage(Width, Offset)
@@ -241,11 +240,11 @@ func GetDocumentInformation(Width int, Offset int, Document *docx.RootDoc) strin
 	title := color.CyanString("None")
 
 	graphics.GenerateBox(Width, Offset, color.BlueString("Enter the Filename."), func() {
-		graphics.PrintTextLine(Width, Offset, 2, "Filename: " + fileName)
-		graphics.PrintTextLine(Width, Offset, 2, "Title:    " + title)
+		graphics.PrintTextLine(Width, Offset, 2, "Filename: "+fileName)
+		graphics.PrintTextLine(Width, Offset, 2, "Title:    "+title)
 
 		graphics.PrintLine(Width, Offset, " ", "│", "│")
-		graphics.PrintIndexTitle(Width, Offset,  "This will be the filename + '.docx'")
+		graphics.PrintIndexTitle(Width, Offset, "This will be the filename + '.docx'")
 	})
 
 	input := Get()
@@ -259,20 +258,18 @@ func GetDocumentInformation(Width int, Offset int, Document *docx.RootDoc) strin
 		graphics.PrintTextLine(Width, Offset, 2, "Filename: "+fileName+color.GreenString(".docx"))
 		graphics.PrintTextLine(Width, Offset, 2, "Title:    "+title)
 		graphics.PrintLine(Width, Offset, " ", "│", "│")
-		graphics.PrintIndexTitle(Width, Offset,  "Title will be inside the file!")
+		graphics.PrintIndexTitle(Width, Offset, "Title will be inside the file!")
 	})
 	input = Get()
 	title = color.GreenString(input)
 	Clear()
 
-
-	
 	Document.AddHeading(input, 0)
 	graphics.GenerateBox(Width, Offset, color.BlueString("Who's it made by?"), func() {
 		graphics.PrintTextLine(Width, Offset, 2, "Filename: "+fileName+color.GreenString(".docx"))
 		graphics.PrintTextLine(Width, Offset, 2, "Title:    "+title)
 		graphics.PrintLine(Width, Offset, " ", "│", "│")
-		graphics.PrintIndexTitle(Width, Offset,  "This will be inside the file!")
+		graphics.PrintIndexTitle(Width, Offset, "This will be inside the file!")
 	})
 	input = Get()
 	Clear()
@@ -286,17 +283,17 @@ func GetSize(Offset int) tsize.Size {
 		var err error
 		s, err = tsize.GetSize()
 		Throw(err)
-		
+
 		if s.Width < 100 {
 			Clear()
 			graphics.GenerateBox(s.Width, Offset, color.BlueString("Increase Window Size..."), func() {
-				stringSize:=strconv.Itoa(s.Width)
+				stringSize := strconv.Itoa(s.Width)
 				size := color.YellowString(stringSize)
-				
+
 				graphics.PrintTextLine(s.Width, Offset, 2, "Size: "+size)
 				graphics.PrintTextLine(s.Width, Offset, 2, "Minimum: "+color.GreenString("100"))
 				graphics.PrintLine(s.Width, Offset, " ", "│", "│")
-				graphics.PrintIndexTitle(s.Width, Offset,  "Press Enter To Refresh")
+				graphics.PrintIndexTitle(s.Width, Offset, "Press Enter To Refresh")
 			})
 			Get()
 		} else {
@@ -305,7 +302,6 @@ func GetSize(Offset int) tsize.Size {
 		}
 	}
 }
-
 
 func main() {
 	Clear()

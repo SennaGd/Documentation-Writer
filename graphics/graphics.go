@@ -2,8 +2,8 @@ package graphics
 
 import (
 	"fmt"
- 	"os/exec"
 	"os"
+	"os/exec"
 
 	"github.com/acarl005/stripansi"
 )
@@ -25,7 +25,7 @@ func PrintLine(width int, offset int, centerLine string, leftEdge string, rightE
 	width -= (offset * 2) // offset | left & right
 
 	// Offset 1
-	for range offset {
+	for range offset + 10 {
 		Print(" ")
 	}
 
@@ -51,7 +51,6 @@ func PrintIndexTitle(width int, offset int, text string) {
 
 	strippedText := stripansi.Strip(text)
 	textLength := len(strippedText)
-	
 
 	lineWidth := GetTotalLineWidth(width, offset)
 	totalWidth := offset + 1 + (width - (textLength / 2)) + len(strippedText) + (width - (textLength / 2)) + 1 + offset
@@ -64,7 +63,7 @@ func PrintIndexTitle(width int, offset int, text string) {
 	}
 	totalWidth -= diff
 
-	for range offset {
+	for range offset * 2 {
 		Print(" ")
 	}
 
@@ -113,7 +112,7 @@ func PrintTextLine(width int, offset int, textOffset int, text string) {
 	remaining := totalWidth - offset - offset - textOffset - textLength - 2 - 1
 
 	// i = 10
-	for range offset {
+	for range offset + 10 {
 		Print(" ")
 	}
 
@@ -159,7 +158,7 @@ func GenerateBox(width int, offset int, title string, funcs ...func()) {
 
 	PrintLine(width, offset, " ", "│", "│")
 	PrintLine(width, offset, "─", "├", "┘")
-	for range offset {
+	for range offset + 10 {
 		Print(" ")
 	}
 
