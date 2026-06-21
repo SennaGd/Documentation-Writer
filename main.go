@@ -51,7 +51,7 @@ func Get() string {
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 
-	newInput := input[:len(input)-2] // remove \r\n
+	newInput := input[:len(input)-1] // remove \r\n
 
 	Throw(err)
 	return newInput
@@ -328,13 +328,14 @@ func main() {
 
 	err = json.Unmarshal(templateFile, &data) // write json contents to (data)
 	Throw(err)
-
+	
+	fmt.Println(&data)
 	selectedTemplate := SelectTemplate(data, s.Width, offset)
-
 	// create file
 	file, err := os.Create("inputs.json")
 	Throw(err)
 
+	fmt.Println(&selectedTemplate)
 	defer file.Close()
 
 	var FinalInputs []Content = ContentInputs(document, data, s.Width, offset, selectedTemplate)
